@@ -59,6 +59,16 @@
         };
       };
     }
+    else if entry ? "inBundle" && entry.inBundle == true
+    then {
+      name = l.last (builtins.split "node_modules/" path);
+      value = {
+        ${entry.version} = {
+          dependencies = getDependencies lock path entry;
+          source = parseSource (lock.packages."node_modules/npm");
+        };
+      };
+    }
     else let
       source = parseSource entry;
       version =
