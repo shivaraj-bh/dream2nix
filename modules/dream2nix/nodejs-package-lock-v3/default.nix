@@ -59,6 +59,18 @@
         };
       };
     }
+    else if entry ? "inBundle" && entry.inBundle == true
+    then let
+      parentName = l.head (l.elemAt (builtins.split "node_modules\/([^\/]*)\/node_modules" path) 1);
+    in {
+      name = l.last (builtins.split "node_modules/" path);
+      value = {
+        ${entry.version} = {
+          dependencies = getDependencies lock path entry;
+          source = parseSource (lock.packages."node_modules/${parentName}");
+        };
+      };
+    }
     else let
       source = parseSource entry;
       version =
